@@ -6,35 +6,54 @@ import { CreateUser } from './dto/auth-dto.create';
 import { Login } from './dto/auth-dto.login';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
+import { Tokens } from './dto/tokens.type';
+import { Role } from 'src/share/common/role';
 
 @Injectable()
 export class AuthService {
     constructor(private readonly userService: UsersService,
         private readonly jwtService: JwtService){}
 
-    async Register(dto: CreateUser): Promise<UserEntity> {
+    async Register(dto: CreateUser) {
         const user = await this.userService.CreateUser(dto);
-        return user;
+        const tokens = await this.getToken(user.id, user.email, user.Role)
+        return tokens;
     }
 
-    async getToken(id: string, email: string) {
-        const payload = {
-            sub: id,
-            email: email,
-        }
+    async getToken(id: string, email: string, roles: Role): Promise<Tokens> {
+        const [at, rt] = await Promise.all([
+            this.jwtService.signAsync(
+                {
+                    sub: id,
+                    roles: roles,
+                    email,
+                },
+                {
+                    secret: 'at-secret',
+                    expiresIn: 60 * 15,
+                },
+            ),
+            this.jwtService.sign(
+                {
+                    sub: id,
+                    roles: roles,
+                    email,
+                },
+                {
+                    secret: 'rt-secret',
+                    expiresIn: 60 * 60 * 24 * 7,
+                },
+            ),
+        ]);
         return {
-            token: this.jwtService.sign(payload)
+            access_token: at,
+            refresh_token: rt,
         }
     }
 
     async Login(dto: Login) {
         const user = await this.userService.validateUser(dto);
-        const payload = {
-            email: user.email,
-            sub: user.id,
-        }
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
+        const tokens = await this.getToken(user.id, user.email, user.Role);
+        return tokens;
     }
 }

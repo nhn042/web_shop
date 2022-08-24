@@ -20,6 +20,15 @@ export class UsersService {
     async findUserById(id: string): Promise<UserEntity>{
         return await this.userRepo.findOneByCondition({where: {id: id}});
     }
+    async activeUser(req: any): Promise<UserEntity> {
+        const user = await this.userRepo.findOneByCondition({where: {email: req.email}})
+        const otp = (await user).activeCode
+        if(req.otp = otp) {
+            user.isActive = true;
+            await user.save();
+            return user;
+        }
+    }
 
     async CreateUser(CreateUserDto: CreateUserDto): Promise<UserEntity> {
         const userEmail = CreateUserDto.email;
