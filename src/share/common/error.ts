@@ -24,21 +24,54 @@ export const ERROR = {
     //product
     PRODUCT_NOT_FOUND: {
       CODE: 'us00001',
-      MESSAGE: 'User not found, disabled or locked',
+      MESSAGE: 'product not found, disabled or locked',
     },
     PRODUCT_EXISTED: {
       CODE: 'us00001',
-      MESSAGE: 'User not found, disabled or locked',
+      MESSAGE: 'product not found, disabled or locked',
     },
-  
-    // department
-    DEPARTMENT_NOT_FOUND: {
+    PRODUCT_FOUND: {
       CODE: 'us00001',
-      MESSAGE: 'User not found, disabled or locked',
+      MESSAGE: 'product found',
     },
-    DEPARTMENT_EXISTED: {
+    
+    CATEGORY_NOT_FOUND: {
       CODE: 'us00001',
-      MESSAGE: 'User not found, disabled or locked',
+      MESSAGE: 'category not found, disabled or locked',
+    },
+    CATEGORY_EXISTED: {
+      CODE: 'us00001',
+      MESSAGE: 'category not found, disabled or locked',
+    },
+    CATEGORY_FOUND: {
+      CODE: 'us00001',
+      MESSAGE: 'category found',
+    },
+
+    ORDER_NOT_FOUND: {
+      CODE: 'us00001',
+      MESSAGE: 'order not found, disabled or locked',
+    },
+    ORDER_EXISTED: {
+      CODE: 'us00001',
+      MESSAGE: 'order not found, disabled or locked',
+    },
+    ORDER_FOUND: {
+      CODE: 'us00001',
+      MESSAGE: 'order found',
+    },
+
+    VOUCHER_NOT_FOUND: {
+      CODE: 'us00001',
+      MESSAGE: 'voucher not found, disabled or locked',
+    },
+    VOUCHER_EXISTED: {
+      CODE: 'us00001',
+      MESSAGE: 'voucher not found, disabled or locked',
+    },
+    VOUCHER_FOUND: {
+      CODE: 'us00001',
+      MESSAGE: 'voucher found',
     },
   };
   

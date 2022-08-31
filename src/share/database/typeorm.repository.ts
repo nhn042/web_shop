@@ -18,12 +18,17 @@ export class TypeOrmRepository<T extends BaseEntity> {
     return this.repository.update(id, data);
   }
 
+
   delete(id: string | number | string[] | Date | number[] | Date[]): Promise<any> {
     return this.repository.delete(id);
   }
 
   async find(): Promise<any> {
     return this.repository.find({});
+  }
+
+  async findAll(conditions: any): Promise<T[]> {
+    return this.repository.find(conditions);
   }
 
   async findOneByCondition(conditions: FindOneOptions): Promise<T> {

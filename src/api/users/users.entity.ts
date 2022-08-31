@@ -2,7 +2,7 @@ import { BaseEntity } from 'src/share/database/base-entity';
 import { USER_CONST } from './user.constant';
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
-import { OrderEntity } from 'src/order/order.entity';
+import { OrderEntity } from 'src/api/order/order.entity';
 import { Role } from 'src/share/common/role';
 
 // export enum Roles {
@@ -39,6 +39,6 @@ export class UserEntity extends BaseEntity{
     Role: Role;
 
     @OneToMany(() => OrderEntity, (order) => order.user)
-    orders: OrderEntity[];
+    order: OrderEntity[];
 
 }

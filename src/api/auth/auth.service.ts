@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException} from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException} from '@nestjs/common';
 import { ERROR } from 'src/share/common/error';
 import { UserEntity } from '../users/users.entity';
 import { UserRepository } from '../users/users.respository';
@@ -53,6 +53,10 @@ export class AuthService {
 
     async Login(dto: Login) {
         const user = await this.userService.validateUser(dto);
+        const isActive = user.isActive;
+        if(!isActive) {
+            throw new NotFoundException(ERROR.USER_EXISTED)
+        }
         const tokens = await this.getToken(user.id, user.email, user.Role);
         return tokens;
     }

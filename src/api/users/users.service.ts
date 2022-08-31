@@ -48,7 +48,6 @@ export class UsersService {
     }
 
     async updateUserById(userID: string, UpdateUserDto: UpdateUserDto): Promise<UserEntity> {
-        console.log(UpdateUserDto.email);
         const userFound = await this.userRepo.findOneByCondition({where: {id: userID}});
         if(!userFound) {
             throw new NotFoundException(ERROR.USER_NOT_FOUND.MESSAGE);
