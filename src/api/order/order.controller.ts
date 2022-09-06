@@ -12,38 +12,33 @@ import { OrderService } from './order.service';
 export class OrderController {
     constructor(private readonly orderService: OrderService){}
     @Get('')
-    @Roles(Role.user)
+    @Roles(Role.user, Role.admin)
     @UseGuards(RolesGuard)
     findAll(): Promise<OrderEntity>{     
         return this.orderService.findAll();
     }
 
     @Get('id/:id')
-    @Roles(Role.user)
+    @Roles(Role.user, Role.admin)
     @UseGuards(RolesGuard)
     findOne(@Param('id') id: string): Promise<OrderEntity> {
         return this.orderService.findOne(id);
    }
 
    @Post('create/:id')
-   @Roles(Role.user)
+   @Roles(Role.admin)
    @UseGuards(RolesGuard)
     createOrder(@Body() createOrderDto: createOrder, @Param() Param): Promise<OrderEntity> {
         return this.orderService.CreateOrder(createOrderDto, Param.id);
     }
-
-    @Post('create/useVoucher/:id')
-    @Roles(Role.user)
-    @UseGuards(RolesGuard)
-     useVoucher(@Body() dto: Voucher, @Param('id') id: string): Promise<OrderEntity> {
-         return this.orderService.useVoucher(dto, id);
-     }
 //     // @Put('update')
 //     // updateUser(@Param('id') id: string, @Body() updateUser: UpdateUserDto): Promise<UserEntity> {
 //     //     return this.userService.updateUserById(id, updateUser);
 //     // }
 
     @Delete('delete/:id')
+    @Roles(Role.admin)
+    @UseGuards(RolesGuard)
     deleteOrder(@Param('id') id: string) {
         return this.orderService.deleteOrder(id);
     }

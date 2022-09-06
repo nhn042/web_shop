@@ -1,18 +1,23 @@
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 export class createProducts{
-    @IsNotEmpty()
-    @IsString()
-    id: string;
 
     @IsNotEmpty()
     @IsString()
     Name: string;
 
     
-    @IsNotEmpty()
-    @IsNumber()
-    barCode: number;
+    // @IsNotEmpty()
+    // @IsNumber()
+    // barCode: number;
+
+    // @IsNotEmpty()
+    // @IsNumber()
+    // weight: number;
+
+    // @IsNotEmpty()
+    // @IsNumber()
+    // PriceImport: number;
 
     @IsNotEmpty()
     @IsNumber()
@@ -21,6 +26,10 @@ export class createProducts{
     @IsNotEmpty()
     @IsString()
     Describe: string;
+
+    // @IsNotEmpty()
+    // @IsString()
+    // Banner: string;
 
     // @IsNotEmpty()
     // @IsNumber()

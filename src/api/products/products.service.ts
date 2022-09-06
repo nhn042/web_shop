@@ -6,22 +6,32 @@ import { createProducts } from './dto/products-dto.create';
 import { updateProduct } from './dto/products-dto.update';
 import { ProductsEntity } from './products.entity';
 import { ProductsRepository } from './products.repository';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import {
+    paginate,
+    Pagination,
+    IPaginationOptions,
+  } from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class ProductsService {
-    constructor(private readonly proRepo: ProductsRepository,
+    constructor(
+        private readonly proRepo: ProductsRepository,
         private readonly categoryService: CategoryService,
         private readonly categoryRepo: CategoryRepository,
         ){}
-    async getAllProducts(): Promise<ProductsEntity> {
-        return await this.proRepo.find();
+    async paginate(options: IPaginationOptions): Promise<Pagination<ProductsEntity>> {
+        const queryBuilder = this.proRepo.getRepository().createQueryBuilder('c');
+       // queryBuilder.orderBy('c.name', 'DESC');
+        return paginate<ProductsEntity>(queryBuilder, options);
     }
 
     async getProductsById(id: string): Promise<ProductsEntity> {
         return await this.proRepo.findOneByCondition({where: {id: id}});
     }
 
-    async createProducts(dto: any, id: string): Promise<ProductsEntity> {
+    async createProducts(dto: createProducts, id: string): Promise<ProductsEntity> {
         const product_found = await this.proRepo.findOneByCondition(
             {where: {
                 Name: dto.Name,
@@ -34,8 +44,9 @@ export class ProductsService {
             throw new NotFoundException(ERROR.PRODUCT_FOUND);
         }
         const category = await this.categoryService.getCategoryById(id);
-        const newProduct = await this.proRepo.save({...dto, categoryId: category})
-        return newProduct;
+        
+     //   const newProduct = await this.proRepo.save({...dto, category: category})
+        return await this.proRepo.save({...dto, category: category})
     }
 
     

@@ -6,6 +6,14 @@ export class createOrder{
     Price: number;
 
     @IsNotEmpty()
+    @IsNumber()
+    quantityOfstocks: number;
+
+    @IsNotEmpty()
     @IsString()
     idProduct: string;
+
+    @IsNotEmpty()
+    @IsString()
+    idVoucher: string;
 }

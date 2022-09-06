@@ -15,7 +15,7 @@ import { OrderRepository } from './order.repository';
 export class OrderService {
     constructor(private readonly odrepository: OrderRepository,
         private readonly userRepo: UsersService,
-        private readonly oderDertailRepo: OrderDetailService,
+        private readonly oderDertailService: OrderDetailService,
         private readonly productRepo: ProductsService,
         private readonly VoucherService: VoucherService,) {}
 
@@ -29,28 +29,41 @@ export class OrderService {
 
     async CreateOrder(createOrderDto: createOrder, id: string): Promise<OrderEntity>{
         const user = await this.userRepo.findUserById(id);
-        const product = await this.productRepo.getProductsById(createOrderDto.idProduct);
-        if(product.status === 'in_active') {
+
+        if(!user){
+            throw new NotFoundException(ERROR.USER_NOT_FOUND);
+        }
+
+        const newOrder = await this.odrepository.save({...createOrderDto, user: user});
+        const product = await this.productRepo.getProductsById(createOrderDto.idProduct);    
+        if(!product || product.status === 'in_active') {
             throw new BadRequestException(ERROR.PRODUCT_EXISTED);
         }
-        const newOrder = await this.odrepository.save({...createOrderDto, user: user, product: product});
-        console.log(newOrder);
-        return newOrder;
+        const orderProduct = await this.oderDertailService.createOrderDetail(
+            {
+                order: newOrder,
+                product: createOrderDto.idProduct,
+            }
+        )
+        const voucher = await this.VoucherService.findOne(createOrderDto.idVoucher);
+        const newPrice = orderProduct.Price - (orderProduct.Price * voucher.Discount/100);
+        await this.VoucherService.updateUseVoucher(voucher.id)  
+        return await this.odrepository.save({...newOrder, Price: newPrice, voucher: voucher});
     }
 
-    async useVoucher(dto: Voucher, id: string): Promise<OrderEntity> {
-        const order = await this.odrepository.findOneByCondition({where: {id: id}});
-        const voucher = await this.VoucherService.findOne(dto.idVoucher);
-        console.log(order.createdAt);
+    // async useVoucher(dto: Voucher, id: string): Promise<OrderEntity> {
+    //     const order = await this.odrepository.findOneByCondition({where: {id: id}});
+    //     const voucher = await this.VoucherService.findOne(dto.idVoucher);
+    //     console.log(order.createdAt);
         
-        if(voucher.Date_end < order.createdAt || voucher.Quantity <= 0) {
-            throw new BadRequestException(ERROR.VOUCHER_EXISTED)
-        }
+    //     if(voucher.Date_end < order.createdAt || voucher.Quantity <= 0) {
+    //         throw new BadRequestException(ERROR.VOUCHER_EXISTED)
+    //     }
 
-        const newPrice = order.Price - (order.Price * voucher.Discount/100);
-        await this.VoucherService.updateUseVoucher(voucher.id)    
-        return await this.odrepository.save({...order, Price: newPrice})
-    }
+    //     const newPrice = order.Price - (order.Price * voucher.Discount/100);
+    //     await this.VoucherService.updateUseVoucher(voucher.id)    
+    //     return await this.odrepository.save({...order, Price: newPrice})
+    // }
 
     async deleteOrder(id: string): Promise<OrderEntity> {
         const orderFound = this.odrepository.findOneByCondition({where: {id: id}});

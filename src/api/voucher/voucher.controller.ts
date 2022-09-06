@@ -11,35 +11,36 @@ import { VoucherService } from './voucher.service';
 @Controller('voucher')
 export class VoucherController {
     constructor(private readonly voucherService: VoucherService){}
-    @Roles(Role.user)
-    @UseGuards(RolesGuard)
     @Get('')
+    @UseGuards(RolesGuard)
     findAll(): Promise<VoucherEntity>{
         return this.voucherService.findAll();
     }
 
-    @Roles(Role.user)
-    @UseGuards(RolesGuard)
     @Get('id/:id')
+    @UseGuards(RolesGuard)
     findOne(@Param('id') id: string): Promise<VoucherEntity> {
         return this.voucherService.findOne(id);
    }
 
-   @Roles(Role.user)
+   @Post('create')
+   @Roles(Role.admin)
    @UseGuards(RolesGuard)
-    @Post('create')
     createVoucher(@Body() createVoucherDto: createVoucher): Promise<VoucherEntity> {
         return this.voucherService.createVoucher(createVoucherDto);
     }
 
     @Put('update')
+    @Roles(Role.admin)
     updateVoucher(@Param('id') id: string, @Body() dto: updateVoucher): Promise<VoucherEntity> {
         return this.voucherService.updateVoucher(id, dto);
     }
 
-    // @Delete('delete/:id')
-    // deleteOrder(@Param('id') id: string) {
-    //     return this.orderService.deleteOrder(id);
-    // }
+    @Delete('delete/:id')
+    @Post('update')
+    @Roles(Role.admin)
+    deleteVoucher(@Param('id') id: string) {
+        return this.voucherService.deleteVoucher(id);
+    }
 
 }

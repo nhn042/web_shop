@@ -17,7 +17,7 @@ export class OrderDetailEntity extends BaseEntity{
     quantityOfstocks: number;
 
     @Column({ default: 0 })
-    Price: number;
+    Price: number
 
     @ManyToOne(() => OrderEntity, (order) => order.orderDetail, {
       })

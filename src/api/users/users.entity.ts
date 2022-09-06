@@ -5,10 +5,7 @@ import { Exclude } from 'class-transformer';
 import { OrderEntity } from 'src/api/order/order.entity';
 import { Role } from 'src/share/common/role';
 
-// export enum Roles {
-//     user = 'user',
-//     admin = 'admin',
-// }
+
 @Entity({ name: USER_CONST.MODEL_NAME })
 export class UserEntity extends BaseEntity{
     @PrimaryGeneratedColumn('uuid')
@@ -29,7 +26,9 @@ export class UserEntity extends BaseEntity{
     @Column()
     Dob: Date;
 
-    @Column()
+    @Column({
+        default: false
+    })
     isActive: boolean;
 
     @Column({default: 0})

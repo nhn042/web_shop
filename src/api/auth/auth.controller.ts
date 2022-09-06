@@ -10,7 +10,6 @@ import { Tokens } from './dto/tokens.type';
 
 export class AuthController {
     constructor(private readonly authService: AuthService) {}
-    //@UseGuards(AuthGuard('jwt'))
     @Post('login')
     Login(@Body() dto: Login){
         console.log(process.env.PRIVATE_KEY_AT);
@@ -22,4 +21,5 @@ export class AuthController {
     Register(@Body() dto: CreateUser): Promise<Tokens>{
         return this.authService.Register(dto);
     }
+
 }

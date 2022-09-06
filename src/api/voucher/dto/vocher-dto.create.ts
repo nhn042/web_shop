@@ -1,4 +1,6 @@
 import { IsDate, IsNotEmpty, IsNumber, IsString } from "class-validator";
+import { OrderEntity } from "src/api/order/order.entity";
+import { ManyToOne } from "typeorm";
 
 export class createVoucher {
     @IsString()

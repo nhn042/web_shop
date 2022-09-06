@@ -22,7 +22,7 @@ export class CategoryEntity extends BaseEntity{
     status: cate_Role;
 
     @OneToMany((type) => ProductsEntity, (product) => product.category)
-    products: ProductsEntity;
+    product: ProductsEntity;
     
 
 

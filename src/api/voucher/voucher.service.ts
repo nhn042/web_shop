@@ -43,4 +43,12 @@ export class VoucherService {
         const voucherUpdate = this.voucherRepo.update(id, dto);
         return voucherUpdate;
     }
+
+    async deleteVoucher(id: string): Promise<VoucherEntity> {
+        const voucherFound = await this.voucherRepo.findOneByCondition({where: {id: id}})
+        if(!voucherFound) {
+            throw new NotFoundException(ERROR.VOUCHER_NOT_FOUND.MESSAGE)
+        }
+        return await this.voucherRepo.delete(id);
+    }
 }

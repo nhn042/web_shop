@@ -8,8 +8,12 @@ import { ProductsEntity } from './products.entity';
 export class ProductsRepository extends TypeOrmRepository<ProductsEntity> {
   constructor(
     @Inject(PRODUCTS_CONST.MODEL_PROVIDER)
-    productsEntity: Repository<ProductsEntity>,
+    private productsEntity: Repository<ProductsEntity>,
   ) {
     super(productsEntity);
+  }
+
+  getRepository(){
+    return this.productsEntity
   }
 }

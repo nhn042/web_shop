@@ -13,7 +13,7 @@ export class CategoryController {
     constructor(private readonly categoryService: CategoryService){}
 
     @Get('user')
-    @Roles(Role.user)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     getAllCate(): Promise<CategoryEntity> {
         return this.categoryService.getAllCate();
@@ -35,21 +35,21 @@ export class CategoryController {
     }
     
     @Post('create')
-    @Roles(Role.user)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     createCategory(@Body() category: createCategory): Promise<CategoryEntity> {
         return this.categoryService.createCategory(category);
     }
 
     @Post('update')
-    @Roles(Role.user)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     updateCategory(@Param('id') id: string, @Body() category: updateCategory): Promise<CategoryEntity> {
         return this.categoryService.updateCategory(id, category);
     }
 
     @Delete('delete/:id')
-    @Roles(Role.user)
+    @Roles(Role.admin)
     @UseGuards(RolesGuard)
     deleteCategory(@Param('id') id: string): Promise<CategoryEntity> {
         return this.categoryService.deleteCategory(id);

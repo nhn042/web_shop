@@ -8,6 +8,9 @@ import { ERROR } from 'src/share/common/error';
 import { encodePassword } from 'src/utils/bcrypt';
 import { Login } from '../auth/dto/auth-dto.login';
 import { SendMailService } from 'src/utils/sendMail/mail.service';
+import { changePassword } from './dto/changePassword-user.dto';
+import { forgetPassword } from './dto/forgetPassword-user.dto';
+import { Role } from 'src/share/common/role';
 
 @Injectable()
 export class UsersService {
@@ -17,9 +20,10 @@ export class UsersService {
         return await this.userRepo.find();
     }
 
-    async findUserById(id: string): Promise<UserEntity>{
+    async findUserById(id: string): Promise<UserEntity> {
         return await this.userRepo.findOneByCondition({where: {id: id}});
     }
+
     async activeUser(req: any): Promise<UserEntity> {
         const user = await this.userRepo.findOneByCondition({where: {email: req.email}})
         const otp = (await user).activeCode
@@ -28,6 +32,41 @@ export class UsersService {
             await user.save();
             return user;
         }
+    }
+
+    async changePassword(dto: changePassword) {
+        const user = await this.userRepo.findOneByCondition({where: {email: dto.email}})
+        if(!user) {
+            throw new NotFoundException(ERROR.USER_NOT_FOUND);
+        }
+        if(user.password !== dto.Password) {
+            throw new NotFoundException(ERROR.USERNAME_OR_PASSWORD_INCORRECT)
+        }
+        user.password = await encodePassword(dto.newPassword);
+        await this.userRepo.save(user);
+        return {message: 'sucessfull'};
+    }
+
+    async forgetPassword(dto: forgetPassword) {
+        const user = await this.userRepo.findOneByCondition({where: {email: dto.email}})
+        if(!user) {
+            throw new NotFoundException(ERROR.USER_NOT_FOUND);
+        }
+        const otp = await this.mailService.sendMail(dto.email);
+        if(dto.otp === otp) {
+            user.password = dto.newPassword;
+        }
+        await this.userRepo.save(user);
+        return {message: 'sucessfull'}
+    }
+
+    async roleUser(id: string): Promise<UserEntity> {
+        const user = await this.userRepo.findOneByCondition({where: {id: id}})
+        if(!user) {
+            throw new NotFoundException(ERROR.USER_NOT_FOUND);
+        }
+        user.Role = Role.admin;
+        return await this.userRepo.save(user);
     }
 
     async CreateUser(CreateUserDto: CreateUserDto): Promise<UserEntity> {
@@ -39,11 +78,9 @@ export class UsersService {
         }
         
         const hashPassword = await encodePassword(CreateUserDto.password);
-        CreateUserDto.activeCode = await this.mailService.sendMail(CreateUserDto.email);
-        console.log(CreateUserDto.activeCode);
-        
-        const newUser = await this.userRepo.save({...CreateUserDto, password: hashPassword});
-        
+        const activeCode = await this.mailService.sendMail(CreateUserDto.email);       
+        const newUser = await this.userRepo.save({...CreateUserDto, password: hashPassword, activeCode: activeCode});
+
         return newUser;
     }
 

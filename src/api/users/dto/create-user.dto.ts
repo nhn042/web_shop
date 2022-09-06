@@ -1,9 +1,6 @@
 import { IsDate, IsEmail, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateUserDto {
-  @IsNotEmpty()
-  @IsString()
-  id: string;
 
   @IsNotEmpty()
   @IsString()
@@ -27,9 +24,4 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   isActive: false;
-
-  @IsNotEmpty()
-  @IsNumber()
-  activeCode: number;
-
 }

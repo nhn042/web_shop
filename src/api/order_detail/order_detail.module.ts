@@ -1,6 +1,5 @@
 import { forwardRef, Module } from '@nestjs/common';
 import { OrderDetailService } from './order_detail.service';
-import { OrderDetailController } from './order_detail.controller';
 import { DatabaseModule } from 'src/configs/database/database.module';
 import { JwtModule } from '@nestjs/jwt';
 import { OrderDetailRepository } from './order_detail.repository';
@@ -13,7 +12,7 @@ import { UsersModule } from '../users/users.module';
 @Module({
   imports: [DatabaseModule, JwtModule, ProductsModule, forwardRef(() => OrderModule), UsersModule],
   providers: [OrderDetailService, OrderDetailRepository, ...orderDetailProviders],
-  controllers: [OrderDetailController],
+  controllers: [],
   exports: [OrderDetailService]
 })
 export class OrderDetailModule {}

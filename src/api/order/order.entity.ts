@@ -12,16 +12,18 @@ export class OrderEntity extends BaseEntity{
     @PrimaryGeneratedColumn()
     id: string;
 
-    @Column({ default: 0 })
+    @Column({ default: 1 })
     Price: number;
+
+    @Column({ default: 0 })
+    quantityOfstocks: number;
 
     @Column({ type: 'enum', enum: order_status, default: order_status.active })
     status: order_status;
 
-    @ManyToOne(() => UserEntity, (user) => user.order, {
-        eager: true,
-      })
+    @ManyToOne(() => UserEntity, (user) => user.order)
       user: UserEntity;
+      
     @OneToMany(() => OrderDetailEntity, (orderDetail) => orderDetail.order)
     orderDetail: OrderDetailEntity;
 

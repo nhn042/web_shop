@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { InjectRepository, TypeOrmModule } from '@nestjs/typeorm';
 import { DatabaseModule } from 'src/configs/database/database.module';
+import { Repository } from 'typeorm';
 import { CategoryModule } from '../category/category.module';
 import { CategoryRepository } from '../category/category.repository';
 import { CategoryService } from '../category/category.service';
