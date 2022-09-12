@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Param, Post, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { cate_Role } from 'src/share/common/category.role';
 import { Role } from 'src/share/common/role';
 import { Roles } from '../auth/guards/roles.auth';
@@ -8,7 +9,9 @@ import { CategoryService } from './category.service';
 import { createCategory } from './dto/category-dto.create';
 import { updateCategory } from './dto/category-dto.update';
 
+@ApiTags('Category')
 @Controller('category')
+@ApiBearerAuth()
 export class CategoryController {
     constructor(private readonly categoryService: CategoryService){}
 

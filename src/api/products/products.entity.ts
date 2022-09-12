@@ -13,20 +13,20 @@ export class ProductsEntity extends BaseEntity{
     @Column()
     Price: number;
 
-    // @Column()
-    // PriceImport: number;
+    @Column({nullable: true})
+    PriceImport: number;
 
-    // @Column()
-    // barCode: number;
+    @Column({nullable: true})
+    barCode: number;
 
-    // @Column()
-    // weight: number;
+    @Column({nullable: true})
+    weight: number;
 
     @Column()
     Describe: string;
 
-    // @Column()
-    // Banner: string;
+    @Column({default: null})
+    Banner: string;
 
 
     @Column({ type: 'enum', enum: products_status, default: products_status.active })

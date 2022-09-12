@@ -1,8 +1,10 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { ApiAcceptedResponse, ApiBearerAuth, ApiForbiddenResponse, ApiFoundResponse, ApiTags, ApiUnauthorizedResponse } from '@nestjs/swagger';
 import { Role } from 'src/share/common/role';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/guards/roles.auth';
 import { RolesGuard } from '../auth/guards/roles.guards';
+import { activeUser } from './dto/active-user.dto';
 import { changePassword } from './dto/changePassword-user.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { forgetPassword } from './dto/forgetPassword-user.dto';
@@ -10,6 +12,8 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './users.entity';
 import { UsersService } from './users.service';
 
+@ApiTags('User')
+@ApiBearerAuth()
 @Controller('users')
 export class UsersController {
     constructor (
@@ -17,6 +21,9 @@ export class UsersController {
     ) {}
 
     @Get('admin')
+    @ApiAcceptedResponse({ description: 'user is admin'})
+    @ApiForbiddenResponse({ description: 'Forbidden.'})
+    @ApiUnauthorizedResponse({ description: 'Not admin'})
     @Roles(Role.admin)
     @UseGuards(RolesGuard)
     findAllUser(): Promise<UserEntity[]>{
@@ -24,15 +31,18 @@ export class UsersController {
     }
 
     @Get('id/:id')
+    @ApiForbiddenResponse({ description: 'Forbidden.'})
+    @ApiUnauthorizedResponse({ description: 'Not admin'})
     @UseGuards(RolesGuard)
     findUserById(@Param('id') id: string): Promise<UserEntity> {
         return this.userService.findUserById(id);
     }
  
     @Post('active')
+    @ApiForbiddenResponse({ description: 'Forbidden.'})
     @UseGuards(RolesGuard)
-    activeUser(@Body() req: any): Promise<UserEntity> {
-    return this.userService.activeUser(req);
+    activeUser(@Body() dto: activeUser): Promise<UserEntity> {
+    return this.userService.activeUser(dto);
     }
 
     @Post('change-pass')
@@ -52,12 +62,6 @@ export class UsersController {
     @UseGuards(RolesGuard)
     roleUser(@Param('id') id: string): Promise<UserEntity> {
     return this.userService.roleUser(id);
-    }
-
-    @Post('create')
-    @UseGuards(RolesGuard)
-    createUser(@Body() createUserDto: CreateUserDto): Promise<UserEntity> {
-        return this.userService.CreateUser(createUserDto);
     }
 
     @Put('update')

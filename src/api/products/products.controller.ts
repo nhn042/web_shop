@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, UseGuards, ParseIntPipe, Query, DefaultValuePipe } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards, ParseIntPipe, Query, DefaultValuePipe, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { Role } from 'src/share/common/role';
 import { Roles } from '../auth/guards/roles.auth';
 import { RolesGuard } from '../auth/guards/roles.guards';
@@ -7,8 +7,12 @@ import { updateProduct } from './dto/products-dto.update';
 import { ProductsEntity } from './products.entity';
 import { ProductsService } from './products.service';
 import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { FileFieldsInterceptor, FileInterceptor } from '@nestjs/platform-express';
 
+@ApiTags('Product')
 @Controller('products')
+@ApiBearerAuth()
 export class ProductsController {
     constructor(private readonly productsService: ProductsService){}
 
@@ -37,9 +41,10 @@ export class ProductsController {
     @Post('create/:id')
     @Roles(Role.admin)
     @UseGuards(RolesGuard)
-    createProducts(@Body() dto: createProducts, @Param() param): Promise<ProductsEntity> {    
+    @UseInterceptors(FileFieldsInterceptor([{ name: 'files', maxCount: 5}]))
+    createProducts(@Body() dto: createProducts, @Param() param, @UploadedFiles() files: { files: Express.Multer.File[]}){    
         
-        return this.productsService.createProducts(dto, param.id);
+        return this.productsService.createProducts(dto, param.id, files.files);
     }
 
     @Post('update')

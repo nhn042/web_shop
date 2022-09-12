@@ -8,11 +8,12 @@ import { ProductsModule } from './api/products/products.module';
 import { CategoryModule } from './api/category/category.module';
 import { OrderDetailModule } from './api/order_detail/order_detail.module';
 import { VoucherModule } from './api/voucher/voucher.module';
+import { PicturesModule } from './api/picture/pitures.module';
 
 
 
 @Module({
-  imports: [AuthModule ,UsersModule, TypeOrmModule.forRoot(config), OrderModule, ProductsModule, CategoryModule, OrderDetailModule, VoucherModule],
+  imports: [AuthModule ,UsersModule, TypeOrmModule.forRoot(config), OrderModule, ProductsModule, CategoryModule, OrderDetailModule, VoucherModule, PicturesModule],
   controllers: [],
   providers: [],
 })

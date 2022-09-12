@@ -11,6 +11,7 @@ import { SendMailService } from 'src/utils/sendMail/mail.service';
 import { changePassword } from './dto/changePassword-user.dto';
 import { forgetPassword } from './dto/forgetPassword-user.dto';
 import { Role } from 'src/share/common/role';
+import { activeUser } from './dto/active-user.dto';
 
 @Injectable()
 export class UsersService {
@@ -24,10 +25,10 @@ export class UsersService {
         return await this.userRepo.findOneByCondition({where: {id: id}});
     }
 
-    async activeUser(req: any): Promise<UserEntity> {
-        const user = await this.userRepo.findOneByCondition({where: {email: req.email}})
+    async activeUser(dto: activeUser): Promise<UserEntity> {
+        const user = await this.userRepo.findOneByCondition({where: {email: dto.email}})
         const otp = (await user).activeCode
-        if(req.otp = otp) {
+        if(dto.otp = otp) {
             user.isActive = true;
             await user.save();
             return user;
@@ -35,7 +36,7 @@ export class UsersService {
     }
 
     async changePassword(dto: changePassword) {
-        const user = await this.userRepo.findOneByCondition({where: {email: dto.email}})
+        const user = await this.userRepo.findOneByCondition({where: {id: dto.id}})
         if(!user) {
             throw new NotFoundException(ERROR.USER_NOT_FOUND);
         }

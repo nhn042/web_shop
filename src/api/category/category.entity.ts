@@ -9,9 +9,6 @@ import { cate_Role } from 'src/share/common/category.role';
 
 @Entity({ name: CATEGORY_CONST.MODEL_NAME })
 export class CategoryEntity extends BaseEntity{
-    @PrimaryGeneratedColumn('uuid')
-    id: string;
-
     @Column({ length: 100, unique: true })
     Name: string;
 

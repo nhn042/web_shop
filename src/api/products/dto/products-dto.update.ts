@@ -1,19 +1,19 @@
+import { ApiProperty } from "@nestjs/swagger";
 import { IsNotEmpty, IsNumber, IsString } from "class-validator";
 import { IsNull } from "typeorm";
 
 export class updateProduct{
-    // @IsNotEmpty()
-
-    // id: string;
-    
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     Name: string;
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsNumber()
     Price: number;
 
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     Describe: string;

@@ -51,20 +51,6 @@ export class OrderService {
         return await this.odrepository.save({...newOrder, Price: newPrice, voucher: voucher});
     }
 
-    // async useVoucher(dto: Voucher, id: string): Promise<OrderEntity> {
-    //     const order = await this.odrepository.findOneByCondition({where: {id: id}});
-    //     const voucher = await this.VoucherService.findOne(dto.idVoucher);
-    //     console.log(order.createdAt);
-        
-    //     if(voucher.Date_end < order.createdAt || voucher.Quantity <= 0) {
-    //         throw new BadRequestException(ERROR.VOUCHER_EXISTED)
-    //     }
-
-    //     const newPrice = order.Price - (order.Price * voucher.Discount/100);
-    //     await this.VoucherService.updateUseVoucher(voucher.id)    
-    //     return await this.odrepository.save({...order, Price: newPrice})
-    // }
-
     async deleteOrder(id: string): Promise<OrderEntity> {
         const orderFound = this.odrepository.findOneByCondition({where: {id: id}});
         if(!orderFound) {

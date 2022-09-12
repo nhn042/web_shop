@@ -1,4 +1,5 @@
 import { Body, Controller, Delete, Get, Inject, Param, Post, Put, Req, UseGuards } from '@nestjs/common';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { Roles } from 'src/api/auth/guards/roles.auth';
 import { Role } from 'src/share/common/role';
 import { RolesGuard } from '../auth/guards/roles.guards';
@@ -7,8 +8,9 @@ import { Voucher } from './dto/voucher-dto';
 import { OrderEntity } from './order.entity';
 import { OrderService } from './order.service';
 
-
+@ApiTags('Order')
 @Controller('order')
+@ApiBearerAuth()
 export class OrderController {
     constructor(private readonly orderService: OrderService){}
     @Get('')

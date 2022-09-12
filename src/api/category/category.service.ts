@@ -28,8 +28,7 @@ export class CategoryService {
         if(category_found) {
             throw new NotFoundException(ERROR.CATEGORY_FOUND);
         }
-        await this.cateRepo.save(category);
-        return;
+        return await this.cateRepo.save({...category});;
     }
 
     async updateCategory(id: string, category: updateCategory): Promise<CategoryEntity> {

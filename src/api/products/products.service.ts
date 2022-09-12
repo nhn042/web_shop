@@ -13,6 +13,7 @@ import {
     Pagination,
     IPaginationOptions,
   } from 'nestjs-typeorm-paginate';
+import { PicturesService } from '../picture/pictures.service';
 
 @Injectable()
 export class ProductsService {
@@ -20,6 +21,7 @@ export class ProductsService {
         private readonly proRepo: ProductsRepository,
         private readonly categoryService: CategoryService,
         private readonly categoryRepo: CategoryRepository,
+        private readonly picturesService: PicturesService,
         ){}
     async paginate(options: IPaginationOptions): Promise<Pagination<ProductsEntity>> {
         const queryBuilder = this.proRepo.getRepository().createQueryBuilder('c');
@@ -31,7 +33,7 @@ export class ProductsService {
         return await this.proRepo.findOneByCondition({where: {id: id}});
     }
 
-    async createProducts(dto: createProducts, id: string): Promise<ProductsEntity> {
+    async createProducts(dto: createProducts, id: string, files: Express.Multer.File[]): Promise<ProductsEntity> {
         const product_found = await this.proRepo.findOneByCondition(
             {where: {
                 Name: dto.Name,
@@ -44,13 +46,16 @@ export class ProductsService {
             throw new NotFoundException(ERROR.PRODUCT_FOUND);
         }
         const category = await this.categoryService.getCategoryById(id);
-        
-     //   const newProduct = await this.proRepo.save({...dto, category: category})
-        return await this.proRepo.save({...dto, category: category})
+        const product = await this.proRepo.save({...dto, category: category});
+        if(files){
+            for(let i = 0; i < files.length; i++) {
+                await this.picturesService.createPicture(files[i], product)
+            }
+        }
+        return product;
     }
 
     
-
     async updateProducts(id: string, dto: updateProduct): Promise<ProductsEntity> {
         const product_found = await this.proRepo.findOneByCondition(
             {where: {
